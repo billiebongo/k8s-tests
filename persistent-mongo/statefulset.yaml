@@ -1,0 +1,49 @@
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+      role: mongo
+      replicaset: MainRepSet
+  serviceName: service-mongodb
+  replicas: 2 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: mongodb # has to match .spec.selector.matchLabels
+        replicaset: MainRepSet
+        role: mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mongo
+        image: mongo
+        command:
+          - mongod
+          - "--bind_ip"
+          - "0.0.0.0"
+          - "--replSet"
+          - rs0
+          - "--smallfiles"
+          - "--noprealloc"
+        ports:
+        - containerPort: 27017
+          name: mongo
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+      annotations:
+       volume.beta.kubernetes.io/storage-class: "standard"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+
