@@ -9,7 +9,7 @@ spec:
       app: mongodb
       role: mongo
       replicaset: MainRepSet
-  serviceName: service-mongodb
+  serviceName: <service-name>
   replicas: 2 # by default is 1
   template:
     metadata:
@@ -40,10 +40,9 @@ spec:
   - metadata:
       name: mongo-persistent-storage
       annotations:
-       volume.beta.kubernetes.io/storage-class: "standard"
+       volume.beta.kubernetes.io/storage-class: <name-of-persistent-volume>
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 1Gi
-
+          storage: 5Gi

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: <service-name>
+ labels:
+   name: mongo
+spec:
+ type: LoadBalancer
+ ports:
+ - port: 27017
+   targetPort: 27017
+   name: mongo
+ selector:
+   role: mongo
+   statefulset.kubernetes.io/pod-name: <pod-name>
